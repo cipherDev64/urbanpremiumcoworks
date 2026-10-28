@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import manifest from '../src/data/imageManifest.json' with { type: 'json' };
-import { NOT_FOUND, OG_IMAGE, ROUTES, jsonLd } from '../src/lib/seo.js';
+import { NOT_FOUND, THANK_YOU, OG_IMAGE, ROUTES, jsonLd } from '../src/lib/seo.js';
 import { SITE } from '../src/data/site.js';
 
 const DIST = 'dist';
@@ -52,6 +52,9 @@ for (const [route, meta] of Object.entries(ROUTES)) {
   fs.writeFileSync(out, page(route, meta));
 }
 fs.writeFileSync(path.join(DIST, '404.html'), page('/404', NOT_FOUND, '/page-not-found', { noindex: true }));
+
+fs.mkdirSync(path.join(DIST, 'thank-you'), { recursive: true });
+fs.writeFileSync(path.join(DIST, 'thank-you', 'index.html'), page('/thank-you', THANK_YOU, '/thank-you', { noindex: true }));
 
 const urls = Object.keys(ROUTES).map((r) => `  <url><loc>${SITE.url}${r === '/' ? '' : r}</loc></url>`).join('\n');
 fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);

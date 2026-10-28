@@ -7,6 +7,7 @@ import Home from './pages/Home.jsx';
 import Workspaces from './pages/Workspaces.jsx';
 import WorkspaceDetail from './pages/WorkspaceDetail.jsx';
 import Contact from './pages/Contact.jsx';
+import ThankYou from './pages/ThankYou.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 // Scroll to top on route change; scroll to the target for hash links.
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/workspaces" element={<Workspaces />} />
           <Route path="/workspaces/:slug" element={<WorkspaceDetail />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/thank-you" element={<ThankYou />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

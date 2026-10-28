@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, m } from 'motion/react';
 import { SITE, SPACE_ALIASES, SPACE_OPTIONS, TEAM_SIZES } from '../data/site.js';
 import { ease } from '../lib/motion.jsx';
@@ -60,6 +61,7 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle'); // idle | sending | sent | error | handoff
   const formRef = useRef(null);
+  const navigate = useNavigate();
 
   const set = (k) => (e) => {
     const value = e.target.value;
@@ -94,8 +96,8 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
         body: JSON.stringify({ name: v.name.trim(), email: v.email.trim(), phone: v.phone.trim(), workspace: label, teamSize: v.team, message: v.message.trim() }),
       });
       if (!res.ok) throw new Error(String(res.status));
-      trackContactConversion();
       setStatus('sent');
+      navigate('/thank-you');
     } catch {
       setStatus('error');
     }

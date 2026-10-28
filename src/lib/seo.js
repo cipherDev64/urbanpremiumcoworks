@@ -32,6 +32,11 @@ export const NOT_FOUND = {
   description: 'The page you are looking for could not be found.',
 };
 
+export const THANK_YOU = {
+  title: 'Thank you | Urban Premium Coworks',
+  description: 'Your enquiry has been sent to Urban Premium Coworks.',
+};
+
 export function jsonLd() {
   return {
     '@context': 'https://schema.org',
