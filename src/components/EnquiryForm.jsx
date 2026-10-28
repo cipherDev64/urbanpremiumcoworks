@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { AnimatePresence, m } from 'motion/react';
 import { SITE, SPACE_ALIASES, SPACE_OPTIONS, TEAM_SIZES } from '../data/site.js';
 import { ease } from '../lib/motion.jsx';
+import { trackContactConversion } from '../lib/analytics.js';
 
 // Integration point: set VITE_FORM_ENDPOINT to any service that accepts a JSON POST
 // (e.g. Formspree). Without it the form validates and hands the enquiry to the visitor's
@@ -93,6 +94,7 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
         body: JSON.stringify({ name: v.name.trim(), email: v.email.trim(), phone: v.phone.trim(), workspace: label, teamSize: v.team, message: v.message.trim() }),
       });
       if (!res.ok) throw new Error(String(res.status));
+      trackContactConversion();
       setStatus('sent');
     } catch {
       setStatus('error');
@@ -115,8 +117,8 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
         <h3>One last step to send your enquiry</h3>
         <p>Your details are ready but have not been sent yet. Open your email app to send them to our team, or call us directly.</p>
         <div className="form-state__actions">
-          <a className="btn btn--primary" href={composeEmail(v)}><span>Send by email</span></a>
-          <a className="btn btn--outline" href={SITE.phoneHref}><span>Call {SITE.phoneDisplay}</span></a>
+          <a className="btn btn--primary" href={composeEmail(v)} onClick={trackContactConversion}><span>Send by email</span></a>
+          <a className="btn btn--outline" href={SITE.phoneHref} onClick={trackContactConversion}><span>Call {SITE.phoneDisplay}</span></a>
         </div>
         <button type="button" className="text-btn" onClick={() => setStatus('idle')}>← Edit my details</button>
       </div>
