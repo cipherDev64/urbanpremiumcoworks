@@ -16,7 +16,7 @@ export const ROUTES = {
   },
   '/contact': {
     title: 'Contact & Book a Tour | Urban Premium Coworks, Bengaluru',
-    description: 'Book a tour or enquire about a workspace at Urban Premium Coworks. Call +91 98866 62272, email admin@urbanpremiumcoworks.com or visit us in Bengaluru 560079.',
+    description: 'Book a tour or enquire about a workspace at Urban Premium Coworks. Call +91 98866 62272, email urbanpremiumcoworks@gmail.com or visit us in Bengaluru 560079.',
   },
 };
 for (const w of WORKSPACES) {

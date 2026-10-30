@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, m } from 'motion/react';
 import { SITE, SPACE_ALIASES, SPACE_OPTIONS, TEAM_SIZES } from '../data/site.js';
 import { ease } from '../lib/motion.jsx';
-import { trackContactConversion } from '../lib/analytics.js';
+import { attribution } from '../lib/analytics.js';
 
-// Integration point: set VITE_FORM_ENDPOINT to any service that accepts a JSON POST
-// (e.g. Formspree). Without it the form validates and hands the enquiry to the visitor's
-// email app instead of pretending it was sent. See README.
-const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT;
+// Defaults to the bundled /api/enquiry Vercel function (see README for its env vars).
+// VITE_FORM_ENDPOINT can point at any service that accepts the same JSON POST instead.
+const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT || '/api/enquiry';
 
 export function resolveSpace(value) {
   if (!value) return '';
@@ -59,7 +58,7 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
     company: '', // honeypot
   });
   const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState('idle'); // idle | sending | sent | error | handoff
+  const [status, setStatus] = useState('idle'); // idle | sending | sent | error
   const formRef = useRef(null);
   const navigate = useNavigate();
 
@@ -83,21 +82,17 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
       formRef.current?.querySelector(`[name="${firstKey}"]`)?.focus();
       return;
     }
-    if (!ENDPOINT) {
-      setStatus('handoff');
-      return;
-    }
     setStatus('sending');
     try {
       const label = SPACE_OPTIONS.find((o) => o.id === v.space)?.label ?? v.space;
       const res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name: v.name.trim(), email: v.email.trim(), phone: v.phone.trim(), workspace: label, teamSize: v.team, message: v.message.trim() }),
+        body: JSON.stringify({ name: v.name.trim(), email: v.email.trim(), phone: v.phone.trim(), workspace: label, teamSize: v.team, message: v.message.trim(), page: window.location.href, ...attribution() }),
       });
       if (!res.ok) throw new Error(String(res.status));
       setStatus('sent');
-      navigate('/thank-you');
+      navigate('/thank-you', { state: { enquiryId: crypto.randomUUID() } });
     } catch {
       setStatus('error');
     }
@@ -113,20 +108,6 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
       </div>
     );
   }
-  if (status === 'handoff') {
-    return (
-      <div className="form-state" role="status">
-        <h3>One last step to send your enquiry</h3>
-        <p>Your details are ready but have not been sent yet. Open your email app to send them to our team, or call us directly.</p>
-        <div className="form-state__actions">
-          <a className="btn btn--primary" href={composeEmail(v)} onClick={trackContactConversion}><span>Send by email</span></a>
-          <a className="btn btn--outline" href={SITE.phoneHref} onClick={trackContactConversion}><span>Call {SITE.phoneDisplay}</span></a>
-        </div>
-        <button type="button" className="text-btn" onClick={() => setStatus('idle')}>← Edit my details</button>
-      </div>
-    );
-  }
-
   return (
     <form ref={formRef} className="form" onSubmit={onSubmit} noValidate aria-label="Workspace enquiry">
       <div className="form__row">
@@ -163,12 +144,12 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
       <AnimatePresence>
         {status === 'error' && (
           <m.p className="form__alert" role="alert" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.4, ease }}>
-            We couldn’t send your enquiry just now. Please try again, or reach us at <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a> or <a href={SITE.emailHref}>{SITE.email}</a>.
+            We couldn’t send your enquiry just now. Please try again, or reach us at <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a> or <a href={composeEmail(v)}>email us your details</a>.
           </m.p>
         )}
       </AnimatePresence>
       <button type="submit" className="btn btn--primary btn--lg" disabled={status === 'sending'}>
-        <span>{status === 'sending' ? 'Sending…' : 'Send enquiry'}</span>
+        <span>{status === 'sending' ? <><span className="spinner" aria-hidden="true" /> Sending…</> : 'Send enquiry'}</span>
       </button>
     </form>
   );

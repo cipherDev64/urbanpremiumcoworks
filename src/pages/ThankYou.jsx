@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Seo from '../components/Seo.jsx';
 import Button from '../components/Button.jsx';
 import { THANK_YOU } from '../lib/seo.js';
@@ -6,7 +7,9 @@ import { trackContactConversion } from '../lib/analytics.js';
 
 // Conversion page for the Google Ads "Contact" action: reached after a successful enquiry.
 export default function ThankYou() {
-  useEffect(() => { trackContactConversion(); }, []);
+  // Only a form submission passes an enquiryId; direct visits and refreshes never count.
+  const id = useLocation().state?.enquiryId;
+  useEffect(() => { trackContactConversion(id); }, [id]);
   return (
     <>
       <Seo title={THANK_YOU.title} description={THANK_YOU.description} path="/thank-you" noindex />

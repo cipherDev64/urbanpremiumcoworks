@@ -19,13 +19,18 @@ Vite + React + React Router + [Motion](https://motion.dev). Every route is stati
 - `scripts/prerender.mjs` — static HTML generation. `vercel.json` — clean URLs + cache headers.
 
 ## Enquiry form
-There is no backend in this repo, so the form never claims a message was sent unless a real endpoint accepted it.
+The form POSTs JSON to `/api/enquiry` ([api/enquiry.js](api/enquiry.js), a Vercel function) which emails the team through Resend.
+It shows success, and fires the Google Ads Contact conversion, only after the server returns 2xx. On failure it shows an error with the phone number and a prefilled `mailto:` link.
 
-- **With an endpoint:** set `VITE_FORM_ENDPOINT` (see `.env.example`) to any service that accepts a JSON POST
-  (e.g. Formspree `https://formspree.io/f/xxxx`). Payload: `name, email, phone, workspace, teamSize, message`.
-  On Vercel add it under Project → Settings → Environment Variables, then redeploy.
-- **Without one (default):** the form validates, then shows a "one last step" panel with a prefilled
-  `mailto:admin@urbanpremiumcoworks.com` button and a `tel:+919886622272` button.
+Set these in Vercel → Project → Settings → Environment Variables, then redeploy:
+- `RESEND_API_KEY` — Resend API key.
+- `ENQUIRY_FROM` — sender on a domain verified in Resend, e.g. `Urban Premium Coworks <enquiries@yourdomain>`.
+- `ENQUIRY_TO` — optional, defaults to `urbanpremiumcoworks@gmail.com`.
+
+Without them the endpoint returns 503 and visitors see the error state; nothing is reported as sent.
+To use another service (Formspree, Web3Forms) set `VITE_FORM_ENDPOINT` instead. Payload: `name, email, phone, workspace, teamSize, message, page, gclid, utm`.
+
+Conversion tracking: `/thank-you` fires `AW-18528203345/ewElCPH66acdENHk94JF` once per submission (with a `transaction_id`), only when reached from the form. Phone and email links do not fire it.
 
 Deep links preselect the workspace: `/contact?space=<id>` where `<id>` is `open-desk`, `dedicated-desk`, `private-cabin`,
 `duo-cabin`, `startup-studio`, `growth-pod`, `enterprise-hub` or `meeting-space` (the original site's `?space=desk` / `?space=office` also work).

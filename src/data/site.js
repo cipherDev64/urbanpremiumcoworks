@@ -3,10 +3,10 @@
 export const SITE = {
   name: 'Urban Premium Coworks',
   url: 'https://urbanpremiumcoworks.com',
-  email: 'admin@urbanpremiumcoworks.com',
+  email: 'urbanpremiumcoworks@gmail.com',
   phoneDisplay: '+91 98866 62272',
   phoneHref: 'tel:+919886622272',
-  emailHref: 'mailto:admin@urbanpremiumcoworks.com',
+  emailHref: 'mailto:urbanpremiumcoworks@gmail.com',
   address: {
     lines: ['#328, 3rd Stage, 4th Block', 'Shakthi Ganapathi Nagara', 'West of Cord Road Extension, Ward #74', 'Bengaluru, Karnataka 560079, India'],
     full: '#328, 3rd Stage, 4th Block, Shakthi Ganapathi Nagara, West of Cord Road Extension, Ward #74, Bengaluru, Karnataka 560079, India',
@@ -153,7 +153,7 @@ export const FAQS = [
   { q: 'What amenities are included?', a: 'Dedicated symmetric gigabit fiber with enterprise-grade security, small-batch roasted coffee, premium tea and healthy gourmet snacks, plus exclusive weekly events and workshops.' },
   { q: 'Do you have meeting rooms?', a: 'Yes. Urban Premium Boards are our state-of-the-art presentation suites. Get in touch to discuss availability and booking.' },
   { q: 'How much does it cost?', a: 'We don’t publish prices online. Send us an enquiry or call, and we’ll share current options for the workspace you’re interested in.' },
-  { q: 'How can I visit?', a: 'Book a private tour through the enquiry form, or call +91 98866 62272 or email admin@urbanpremiumcoworks.com.' },
+  { q: 'How can I visit?', a: 'Book a private tour through the enquiry form, or call +91 98866 62272 or email urbanpremiumcoworks@gmail.com.' },
 ];
 
 // Homepage / gallery selections (filenames from assets/EDITED PHOTOS).
