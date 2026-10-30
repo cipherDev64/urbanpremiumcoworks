@@ -46,7 +46,7 @@ export function jsonLd() {
     image: OG_IMAGE,
     description: ROUTES['/'].description,
     email: SITE.email,
-    telephone: '+919886622272',
+    telephone: '+919886662272',
     address: {
       '@type': 'PostalAddress',
       streetAddress: SITE.address.street,

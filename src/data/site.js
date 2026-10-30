@@ -8,7 +8,7 @@ export function whatsappLink({ name = '', phone = '', email = '', seats = '', vi
     `Full name: ${name}`, `Phone number: ${phone}`, `Email: ${email}`,
     `Workspace type: ${workspace}`, `How many seats do you need?: ${seats}`, `When would you like to visit?: ${visit}`,
   ].join('\n');
-  return `https://wa.me/919886622272?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/919886662272?text=${encodeURIComponent(text)}`;
 }
 
 export const SITE = {
@@ -16,7 +16,7 @@ export const SITE = {
   url: 'https://www.urbanpremiumcoworks.in',
   email: 'urbanpremiumcoworks@gmail.com',
   phoneDisplay: '+91 98866 62272',
-  phoneHref: 'tel:+919886622272',
+  phoneHref: 'tel:+919886662272',
   whatsappHref: whatsappLink(),
   emailHref: 'mailto:urbanpremiumcoworks@gmail.com',
   address: {
