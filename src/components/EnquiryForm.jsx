@@ -5,9 +5,11 @@ import { SITE, SPACE_ALIASES, SPACE_OPTIONS, TEAM_SIZES } from '../data/site.js'
 import { ease } from '../lib/motion.jsx';
 import { attribution } from '../lib/analytics.js';
 
-// Defaults to the bundled /api/enquiry Vercel function (see README for its env vars).
-// VITE_FORM_ENDPOINT can point at any service that accepts the same JSON POST instead.
-const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT || '/api/enquiry';
+// Enquiries go straight from the browser to Web3Forms (free plan: server-side calls are blocked),
+// which emails the inbox the access key is registered to. The key is public by design.
+// VITE_FORM_ENDPOINT can point at another service that accepts the same JSON POST instead.
+const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT || 'https://api.web3forms.com/submit';
+const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
 export function resolveSpace(value) {
   if (!value) return '';
@@ -85,12 +87,20 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
     setStatus('sending');
     try {
       const label = SPACE_OPTIONS.find((o) => o.id === v.space)?.label ?? v.space;
+      if (!ACCESS_KEY && !import.meta.env.VITE_FORM_ENDPOINT) throw new Error('not configured');
+      const { gclid, utm } = attribution();
       const res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name: v.name.trim(), email: v.email.trim(), phone: v.phone.trim(), workspace: label, teamSize: v.team, message: v.message.trim(), page: window.location.href, ...attribution() }),
+        body: JSON.stringify({
+          access_key: ACCESS_KEY, subject: `Website enquiry: ${label} (${v.name.trim()})`, from_name: 'Urban Premium Coworks website',
+          name: v.name.trim(), email: v.email.trim(), phone: v.phone.trim(), workspace: label, teamSize: v.team,
+          message: v.message.trim() || 'I would like to know more about your workspaces.',
+          page: window.location.href, gclid, ...utm,
+        }),
       });
-      if (!res.ok) throw new Error(String(res.status));
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || j.success === false) throw new Error(String(res.status));
       setStatus('sent');
       navigate('/thank-you', { state: { enquiryId: crypto.randomUUID() } });
     } catch {

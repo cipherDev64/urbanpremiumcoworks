@@ -19,15 +19,13 @@ Vite + React + React Router + [Motion](https://motion.dev). Every route is stati
 - `scripts/prerender.mjs` — static HTML generation. `vercel.json` — clean URLs + cache headers.
 
 ## Enquiry form
-The form POSTs JSON to `/api/enquiry` ([api/enquiry.js](api/enquiry.js), a Vercel function) which forwards it to the team's inbox through [Web3Forms](https://web3forms.com) (free; no domain needed).
-It shows success, and fires the Google Ads Contact conversion, only after the server returns 2xx. On failure it shows an error with the phone number and a prefilled `mailto:` link.
+The form posts straight from the browser to [Web3Forms](https://web3forms.com) (free; no domain needed), which emails the inbox the access key is registered to. (Web3Forms blocks server-side calls on the free plan, so there is no API function.)
+It shows success, and fires the Google Ads Contact conversion, only after Web3Forms returns success. On failure it shows an error with the phone number, WhatsApp and a prefilled `mailto:` link.
 
-Setup: get a free access key at web3forms.com using urbanpremiumcoworks@gmail.com (it is emailed to you), then add `WEB3FORMS_ACCESS_KEY` in Vercel → Project → Settings → Environment Variables and redeploy.
+Setup: get a free access key at web3forms.com, set `VITE_WEB3FORMS_ACCESS_KEY` in Vercel → Project → Settings → Environment Variables (Production) and redeploy. The key is public by design; it is baked into the client bundle at build time.
+To use another service (Formspree etc.) set `VITE_FORM_ENDPOINT` instead.
 
-Without the key the endpoint returns 503 and visitors see the error state; nothing is reported as sent.
-To use another service (Formspree, Web3Forms) set `VITE_FORM_ENDPOINT` instead. Payload: `name, email, phone, workspace, teamSize, message, page, gclid, utm`.
-
-Conversion tracking: `/thank-you` fires `AW-18528203345/ewElCPH66acdENHk94JF` once per submission (with a `transaction_id`), only when reached from the form. Phone and email links do not fire it.
+Conversion tracking: `/thank-you` fires `AW-18528203345/ewElCPH66acdENHk94JF` once per submission (with a `transaction_id`), only when reached from the form. Phone, WhatsApp and email links do not fire it.
 
 Deep links preselect the workspace: `/contact?space=<id>` where `<id>` is `open-desk`, `dedicated-desk`, `private-cabin`,
 `duo-cabin`, `startup-studio`, `growth-pod`, `enterprise-hub` or `meeting-space` (the original site's `?space=desk` / `?space=office` also work).
