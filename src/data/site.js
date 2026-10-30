@@ -1,12 +1,23 @@
 // Single source of truth for business facts. Everything here is taken from
 // https://urbanpremiumcoworks.com/ or supplied by the business owner.
+// WhatsApp click-to-chat with a lead-style message (same fields as the enquiry form).
+// Blank fields are left for the visitor to complete before sending.
+export function whatsappLink({ name = '', phone = '', email = '', seats = '', visit = '', workspace = '' } = {}) {
+  const text = [
+    'Hello Urban Premium Coworks, I’d like to enquire about a workspace.', '',
+    `Full name: ${name}`, `Phone number: ${phone}`, `Email: ${email}`,
+    `Workspace type: ${workspace}`, `How many seats do you need?: ${seats}`, `When would you like to visit?: ${visit}`,
+  ].join('\n');
+  return `https://wa.me/919886622272?text=${encodeURIComponent(text)}`;
+}
+
 export const SITE = {
   name: 'Urban Premium Coworks',
   url: 'https://www.urbanpremiumcoworks.in',
   email: 'urbanpremiumcoworks@gmail.com',
   phoneDisplay: '+91 98866 62272',
   phoneHref: 'tel:+919886622272',
-  whatsappHref: 'https://wa.me/919886622272?text=' + encodeURIComponent('Hello Urban Premium Coworks, I’d like to know more about your workspaces.'),
+  whatsappHref: whatsappLink(),
   emailHref: 'mailto:urbanpremiumcoworks@gmail.com',
   address: {
     lines: ['#328, 3rd Stage, 4th Block', 'Shakthi Ganapathi Nagara', 'West of Cord Road Extension, Ward #74', 'Bengaluru, Karnataka 560079, India'],

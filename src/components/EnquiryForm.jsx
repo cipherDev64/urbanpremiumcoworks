@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, m } from 'motion/react';
-import { SITE, SPACE_ALIASES, SPACE_OPTIONS, TEAM_SIZES } from '../data/site.js';
+import { SITE, whatsappLink, SPACE_ALIASES, SPACE_OPTIONS, TEAM_SIZES } from '../data/site.js';
 import { ease } from '../lib/motion.jsx';
 import { attribution } from '../lib/analytics.js';
 
@@ -154,7 +154,7 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
       <AnimatePresence>
         {status === 'error' && (
           <m.p className="form__alert" role="alert" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.4, ease }}>
-            We couldn’t send your enquiry just now. Please try again, or reach us at <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a>, <a href={SITE.whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a> or <a href={composeEmail(v)}>email us your details</a>.
+            We couldn’t send your enquiry just now. Please try again, or reach us at <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a>, <a href={whatsappLink({ name: v.name.trim(), phone: v.phone.trim(), email: v.email.trim(), seats: v.team, workspace: SPACE_OPTIONS.find((o) => o.id === v.space)?.label ?? '' })} target="_blank" rel="noopener noreferrer">WhatsApp</a> or <a href={composeEmail(v)}>email us your details</a>.
           </m.p>
         )}
       </AnimatePresence>
