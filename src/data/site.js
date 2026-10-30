@@ -2,10 +2,11 @@
 // https://urbanpremiumcoworks.com/ or supplied by the business owner.
 export const SITE = {
   name: 'Urban Premium Coworks',
-  url: 'https://urbanpremiumcoworks.com',
+  url: 'https://www.urbanpremiumcoworks.in',
   email: 'urbanpremiumcoworks@gmail.com',
   phoneDisplay: '+91 98866 62272',
   phoneHref: 'tel:+919886622272',
+  whatsappHref: 'https://wa.me/919886622272?text=' + encodeURIComponent('Hello Urban Premium Coworks, I’d like to know more about your workspaces.'),
   emailHref: 'mailto:urbanpremiumcoworks@gmail.com',
   address: {
     lines: ['#328, 3rd Stage, 4th Block', 'Shakthi Ganapathi Nagara', 'West of Cord Road Extension, Ward #74', 'Bengaluru, Karnataka 560079, India'],

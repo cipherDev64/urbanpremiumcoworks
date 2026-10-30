@@ -144,7 +144,7 @@ export default function EnquiryForm({ initialSpace = '', initialMessage = '' }) 
       <AnimatePresence>
         {status === 'error' && (
           <m.p className="form__alert" role="alert" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.4, ease }}>
-            We couldn’t send your enquiry just now. Please try again, or reach us at <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a> or <a href={composeEmail(v)}>email us your details</a>.
+            We couldn’t send your enquiry just now. Please try again, or reach us at <a href={SITE.phoneHref}>{SITE.phoneDisplay}</a>, <a href={SITE.whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a> or <a href={composeEmail(v)}>email us your details</a>.
           </m.p>
         )}
       </AnimatePresence>

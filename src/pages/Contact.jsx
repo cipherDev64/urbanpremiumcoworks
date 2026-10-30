@@ -43,6 +43,7 @@ export default function Contact() {
               <h2 className="list-h">Call or email</h2>
               <p className="contact__big"><a href={SITE.phoneHref}>{SITE.phoneDisplay}</a></p>
               <p className="contact__big contact__big--sm"><a href={SITE.emailHref}>{SITE.email}</a></p>
+              <p className="contact__wa"><Button href={SITE.whatsappHref} target="_blank" rel="noopener noreferrer" variant="outline" icon={false}>Chat on WhatsApp<span className="sr-only"> (opens in a new tab)</span></Button></p>
               <h2 className="list-h">Visit</h2>
               <address>{SITE.address.lines.map((l) => <span key={l}>{l}<br /></span>)}</address>
               <Button href={SITE.directionsHref} target="_blank" rel="noopener noreferrer" variant="outline">Get directions<span className="sr-only"> (opens Google Maps in a new tab)</span></Button>

@@ -347,8 +347,9 @@ main { display: block; }
 .contact__side { display: grid; gap: 1.2rem; }
 .contact__side address { font-size: 1.05rem; margin-bottom: 0.6rem; }
 .contact__big { font-family: var(--serif); font-size: clamp(1.8rem, 3vw, 2.5rem); line-height: 1.15; margin-bottom: 0.4rem; font-weight: 350; }
-.contact__big--sm { font-size: clamp(1.15rem, 1.9vw, 1.5rem); word-break: break-word; margin-bottom: 1.6rem; }
+.contact__big--sm { font-size: clamp(1.15rem, 1.9vw, 1.5rem); word-break: break-word; margin-bottom: 1rem; }
 .contact__big a:hover { color: var(--accent); }
+.contact__wa { margin-bottom: 1.8rem; }
 .contact__side .list-h:not(:first-child) { margin-top: 1rem; }
 .contact__map { aspect-ratio: 4 / 3; background: var(--paper-2); margin-top: 0.6rem; border: 1px solid var(--line); }
 .contact__map iframe { width: 100%; height: 100%; border: 0; display: block; }

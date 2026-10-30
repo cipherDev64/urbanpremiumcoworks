@@ -36,4 +36,4 @@ Deep links preselect the workspace: `/contact?space=<id>` where `<id>` is `open-
 ## Content notes
 Facts come from urbanpremiumcoworks.com. It lists no prices, hours, testimonials or event-space details, so none are shown.
 No logo file was supplied; the header uses a typographic wordmark and `public/favicon.svg` is a simple monogram. Swap in the real logo when available.
-The canonical domain is assumed to be `https://urbanpremiumcoworks.com` (change `SITE.url` in `src/data/site.js` if different).
+The canonical domain is `https://www.urbanpremiumcoworks.in` (change `SITE.url` in `src/data/site.js` if different).
