@@ -1,9 +1,6 @@
-// Vercel serverless function: emails a website enquiry to the team via Resend.
-// Required env vars (Vercel project settings): RESEND_API_KEY, ENQUIRY_FROM (a sender on a
-// domain verified in Resend, e.g. "Urban Premium Coworks <enquiries@yourdomain>").
-// Optional: ENQUIRY_TO (defaults to urbanpremiumcoworks@gmail.com).
-
-const TO = process.env.ENQUIRY_TO || 'urbanpremiumcoworks@gmail.com';
+// Vercel serverless function: forwards a website enquiry to the team's inbox via Web3Forms
+// (free, delivers to the Gmail address registered with the access key; no domain needed).
+// Required env var (Vercel project settings): WEB3FORMS_ACCESS_KEY.
 
 // Best-effort per-instance rate limit: 5 enquiries per 10 minutes per IP.
 const hits = new Map();
@@ -17,13 +14,11 @@ function limited(ip) {
 }
 
 const clean = (v, max) => String(v ?? '').replace(/[\r\n]+/g, ' ').trim().slice(0, max);
-const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'method' });
-  const key = process.env.RESEND_API_KEY;
-  const from = process.env.ENQUIRY_FROM;
-  if (!key || !from) return res.status(503).json({ ok: false, error: 'not_configured' });
+  const key = process.env.WEB3FORMS_ACCESS_KEY;
+  if (!key) return res.status(503).json({ ok: false, error: 'not_configured' });
 
   const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
   if (limited(ip)) return res.status(429).json({ ok: false, error: 'rate_limited' });
@@ -42,21 +37,21 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'invalid' });
   }
 
-  const rows = [
-    ['Name', d.name], ['Email', d.email], ['Phone', d.phone], ['Workspace', d.workspace], ['Team size', d.team],
-    ['Message', d.message || '—'], ['Page', d.page || '—'], ['gclid', d.gclid || '—'],
-    ...Object.entries(d.utm).map(([k, v]) => [k, v]),
-  ];
-  const text = rows.map(([k, v]) => `${k}: ${v}`).join('\n');
-  const html = `<table cellpadding="6">${rows.map(([k, v]) => `<tr><td><b>${esc(k)}</b></td><td>${esc(v).replace(/\n/g, '<br>')}</td></tr>`).join('')}</table>`;
+  const fields = {
+    Phone: d.phone, Workspace: d.workspace, 'Team size': d.team, Page: d.page || '—', gclid: d.gclid || '—', ...d.utm,
+  };
 
   try {
-    const r = await fetch('https://api.resend.com/emails', {
+    const r = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from, to: [TO], reply_to: d.email, subject: `Website enquiry: ${d.workspace} (${d.name})`, text, html }),
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: key, subject: `Website enquiry: ${d.workspace} (${d.name})`, from_name: 'Urban Premium Coworks website',
+        name: d.name, email: d.email, message: d.message || 'I would like to know more about your workspaces.', ...fields,
+      }),
     });
-    if (!r.ok) return res.status(502).json({ ok: false, error: 'send_failed' });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || j.success === false) return res.status(502).json({ ok: false, error: 'send_failed' });
     return res.status(200).json({ ok: true });
   } catch {
     return res.status(502).json({ ok: false, error: 'send_failed' });

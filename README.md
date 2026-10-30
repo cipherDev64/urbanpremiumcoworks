@@ -19,15 +19,12 @@ Vite + React + React Router + [Motion](https://motion.dev). Every route is stati
 - `scripts/prerender.mjs` — static HTML generation. `vercel.json` — clean URLs + cache headers.
 
 ## Enquiry form
-The form POSTs JSON to `/api/enquiry` ([api/enquiry.js](api/enquiry.js), a Vercel function) which emails the team through Resend.
+The form POSTs JSON to `/api/enquiry` ([api/enquiry.js](api/enquiry.js), a Vercel function) which forwards it to the team's inbox through [Web3Forms](https://web3forms.com) (free; no domain needed).
 It shows success, and fires the Google Ads Contact conversion, only after the server returns 2xx. On failure it shows an error with the phone number and a prefilled `mailto:` link.
 
-Set these in Vercel → Project → Settings → Environment Variables, then redeploy:
-- `RESEND_API_KEY` — Resend API key.
-- `ENQUIRY_FROM` — sender on a domain verified in Resend, e.g. `Urban Premium Coworks <enquiries@yourdomain>`.
-- `ENQUIRY_TO` — optional, defaults to `urbanpremiumcoworks@gmail.com`.
+Setup: get a free access key at web3forms.com using urbanpremiumcoworks@gmail.com (it is emailed to you), then add `WEB3FORMS_ACCESS_KEY` in Vercel → Project → Settings → Environment Variables and redeploy.
 
-Without them the endpoint returns 503 and visitors see the error state; nothing is reported as sent.
+Without the key the endpoint returns 503 and visitors see the error state; nothing is reported as sent.
 To use another service (Formspree, Web3Forms) set `VITE_FORM_ENDPOINT` instead. Payload: `name, email, phone, workspace, teamSize, message, page, gclid, utm`.
 
 Conversion tracking: `/thank-you` fires `AW-18528203345/ewElCPH66acdENHk94JF` once per submission (with a `transaction_id`), only when reached from the form. Phone and email links do not fire it.
